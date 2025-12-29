@@ -66,6 +66,7 @@ struct KastLauncherApp {
         search_focus: bool,
         sorted_apps: Vec<App>,
         selected_index: usize,
+        fonts_loaded: bool,
 }
 
 impl KastLauncherApp {
@@ -86,12 +87,24 @@ impl KastLauncherApp {
                         search_focus,
                         sorted_apps,
                         selected_index: 0,
+                        fonts_loaded: false,
                 }
         }
 }
 
 impl eframe::App for KastLauncherApp {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+                // ==== load fonts ====
+                if !self.fonts_loaded {
+                        self.fonts_loaded = true;
+                        let ctx = ctx.clone();
+                        let path = self.config.font.path.clone();
+                        std::thread::spawn(move || {
+                                loadfont::replace_fonts(&ctx, path.clone());
+                                loadfont::add_font(&ctx, path);
+                                ctx.request_repaint();
+                        });
+                }
                 // ==== search logic ====
                 self.sorted_apps.clear();
                 let search = self.search.to_lowercase();

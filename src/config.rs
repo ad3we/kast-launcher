@@ -7,13 +7,9 @@ use std::path::Path;
 use std::path::PathBuf;
 
 pub fn import() -> (Config, bool) {
-        let conf_path: PathBuf;
-        let conf_file_was_created: bool;
-        (conf_path, conf_file_was_created) = get_conf_path_from_sys();
-
-        let configtemp = deserialize_conf(&conf_path).expect("Failed to deserialize config");
-
-        return (Config::new(configtemp), conf_file_was_created);
+        let (conf_path, conf_file_was_created) = get_conf_path_from_sys();
+        let config = deserialize_conf(&conf_path).unwrap();
+        (config, conf_file_was_created)
 }
 
 fn get_conf_path_from_sys() -> (PathBuf, bool) {
@@ -50,8 +46,8 @@ fn get_home_path() -> Result<PathBuf, Box<dyn Error>> {
         Ok(home_path)
 }
 
-fn deserialize_conf(path: &Path) -> Result<ConfigTemp, Box<dyn std::error::Error>> {
+fn deserialize_conf(path: &Path) -> Result<Config, Box<dyn std::error::Error>> {
         let contents = fs::read_to_string(path)?;
-        let config = toml::from_str(&contents)?;
+        let config: Config = toml::from_str(&contents)?;
         Ok(config)
 }

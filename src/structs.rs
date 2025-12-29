@@ -2,220 +2,182 @@ use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
 pub struct Config {
+        #[serde(default)]
         pub font: Font,
+        #[serde(default)]
         pub icons: Icons,
+        #[serde(default)]
         pub colors: Colors,
+        #[serde(default)]
         pub window: Window,
+        #[serde(default)]
         pub misc: Misc,
+        #[serde(rename = "App")]
         pub apps: Vec<App>,
 }
 
-impl Config {
-        pub fn new(temp: ConfigTemp) -> Self {
-                // Helper closures
-                let str_or_default =
-                |opt: Option<String>, default: &str| -> String { opt.unwrap_or(default.to_string()) };
-                let char_or_default =
-                |opt: Option<char>, default: char| -> char { opt.unwrap_or_else(|| default) };
-                let bool_or_default =
-                |opt: Option<bool>, default: bool| -> bool { opt.unwrap_or_else(|| default) };
-                let u32_or_default = |opt: Option<u32>, default: u32| -> u32 { opt.unwrap_or(default) };
-                let f32_or_default = |opt: Option<f32>, default: f32| -> f32 { opt.unwrap_or(default) };
-                let u8_or_default = |opt: Option<u8>, default: u8| -> u8 { opt.unwrap_or(default) };
-                let u64_or_default = |opt: Option<u64>, default: u64| -> u64 { opt.unwrap_or(default) };
-
-                Config {
-                        font: Font {
-                                path: str_or_default(temp.font.path, ""),
-                                size: f32_or_default(temp.font.size, 14.0),
-                        },
-                        icons: Icons {
-                                entry: char_or_default(temp.icons.entry, ''),
-                                entry_icon: bool_or_default(temp.icons.entry_icon, false),
-                        },
-                        colors: Colors {
-                                text: str_or_default(temp.colors.text, "#ffffff"),
-                                text_aux: str_or_default(temp.colors.text_aux, "#888888"),
-                                accent: str_or_default(temp.colors.accent, "#333333"),
-                                background: str_or_default(temp.colors.background, "#1a1a1a"),
-                        },
-                        window: Window {
-                                width: u32_or_default(temp.window.width, 400),
-                                height: u32_or_default(temp.window.height, 600),
-                                elem_cnr_rad: u8_or_default(temp.window.elem_cnr_rad, 10),
-                                row_height: f32_or_default(temp.window.row_height, 30.0),
-                        },
-                        misc: Misc {
-                                search_hint: str_or_default(temp.misc.search_hint, "Search..."),
-                                timeout: u64_or_default(temp.misc.timeout, 20),
-                        },
-                        apps: temp
-                                .apps
-                                .into_iter()
-                                .map(|a| App {
-                                        name: str_or_default(a.name, "x"),
-                                        icon: char_or_default(a.icon, 'x'),
-                                        path: str_or_default(a.path, "x"),
-                                })
-                                .collect(),
+impl Default for Config {
+        fn default() -> Self {
+                Self {
+                        font: Font::default(),
+                        icons: Icons::default(),
+                        colors: Colors::default(),
+                        window: Window::default(),
+                        misc: Misc::default(),
+                        apps: vec![],
                 }
-        }
-}
-
-#[derive(Deserialize, Debug)]
-pub struct ConfigTemp {
-        #[serde(rename = "Font")]
-        pub font: FontTemp,
-        #[serde(rename = "Icons")]
-        pub icons: IconsTemp,
-        #[serde(rename = "Colors")]
-        pub colors: ColorsTemp,
-        #[serde(rename = "Window")]
-        pub window: WindowTemp,
-        #[serde(rename = "Misc")]
-        pub misc: MiscTemp,
-        #[serde(rename = "App")]
-        pub apps: Vec<AppTemp>,
-}
-
-impl ConfigTemp {
-        pub fn get_font(&self) -> FontTemp {
-                FontTemp {
-                        path: Some(self.font.path.clone().unwrap_or("Default Font".to_string())),
-                        size: Some(self.font.size.clone().unwrap_or(14.0)),
-                }
-        }
-
-        pub fn get_icons(&self) -> IconsTemp {
-                IconsTemp {
-                        entry: Some(self.icons.entry.clone().unwrap_or('')),
-                        entry_icon: Some(self.icons.entry_icon.clone().unwrap_or(false)),
-                }
-        }
-
-        pub fn get_window(&self) -> WindowTemp {
-                WindowTemp {
-                        width: Some(self.window.width.unwrap_or(400)),
-                        height: Some(self.window.height.unwrap_or(600)),
-                        elem_cnr_rad: Some(self.window.elem_cnr_rad.unwrap_or(10)),
-                        row_height: Some(self.window.row_height.unwrap_or(30.0)),
-                }
-        }
-
-        pub fn get_misc(&self) -> MiscTemp {
-                MiscTemp {
-                        search_hint: Some(
-                                self.misc
-                                        .search_hint
-                                        .clone()
-                                        .unwrap_or("Search...".to_string()),
-                        ),
-                        timeout: Some(self.misc.timeout.unwrap_or(20)),
-                }
-        }
-        pub fn get_colors(&self) -> ColorsTemp {
-                ColorsTemp {
-                        text: Some(self.colors.text.clone().unwrap_or("#ffffff".to_string())),
-                        text_aux: Some(self.colors.text.clone().unwrap_or("#888888".to_string())),
-                        accent: Some(self.colors.accent.clone().unwrap_or("#333333".to_string())),
-                        background: Some(
-                                self.colors
-                                        .background
-                                        .clone()
-                                        .unwrap_or("#1a1a1a".to_string()),
-                        ),
-                }
-        }
-
-        pub fn get_apps(&self) -> Vec<AppTemp> {
-                self.apps
-                        .iter()
-                        .map(|a| AppTemp {
-                                name: Some(a.name.clone().unwrap_or("x".to_string())),
-                                icon: Some(a.icon.clone().unwrap_or('x')),
-                                path: Some(a.path.clone().unwrap_or("x".to_string())),
-                        })
-                        .collect()
         }
 }
 
 // ==== font ====
+
 #[derive(Clone, Deserialize, Debug)]
 pub struct Font {
+        #[serde(default)]
         pub path: String,
+        #[serde(default = "default_font_size")]
         pub size: f32,
 }
-#[derive(Deserialize, Debug)]
-pub struct FontTemp {
-        pub path: Option<String>,
-        pub size: Option<f32>,
+fn default_font_size() -> f32 {
+        12.0
+}
+impl Default for Font {
+        fn default() -> Self {
+                Self {
+                        path: "".to_string(),
+                        size: default_font_size(),
+                }
+        }
 }
 
 // ==== icons ====
+
 #[derive(Deserialize, Debug)]
 pub struct Icons {
+        #[serde(default = "default_entry")]
         pub entry: char,
+        #[serde(default)]
         pub entry_icon: bool,
 }
-#[derive(Deserialize, Debug)]
-pub struct IconsTemp {
-        pub entry: Option<char>,
-        pub entry_icon: Option<bool>,
+
+fn default_entry() -> char {
+        ''
+}
+
+impl Default for Icons {
+        fn default() -> Self {
+                Self {
+                        entry: default_entry(),
+                        entry_icon: false,
+                }
+        }
 }
 
 // ==== colors ====
-#[derive(Deserialize, Debug)]
+
+#[derive(Clone, Deserialize, Debug)]
 pub struct Colors {
+        #[serde(default)]
         pub text: String,
+        #[serde(default)]
         pub text_aux: String,
+        #[serde(default)]
         pub accent: String,
+        #[serde(default)]
         pub background: String,
 }
-#[derive(Deserialize, Debug)]
-pub struct ColorsTemp {
-        pub text: Option<String>,
-        pub text_aux: Option<String>,
-        pub accent: Option<String>,
-        pub background: Option<String>,
+impl Default for Colors {
+        fn default() -> Self {
+                Self {
+                        text: "#ffffff".to_string(),
+                        text_aux: "#888888".to_string(),
+                        accent: "#333333".to_string(),
+                        background: "1a1a1a".to_string(),
+                }
+        }
 }
 
 // ==== window ====
-#[derive(Deserialize, Debug)]
+
+#[derive(Clone, Deserialize, Debug)]
 pub struct Window {
+        #[serde(default = "default_width")]
         pub width: u32,
+        #[serde(default = "default_height")]
         pub height: u32,
+        #[serde(default = "default_cnr_rad")]
         pub elem_cnr_rad: u8,
+        #[serde(default = "default_row_height")]
         pub row_height: f32,
 }
-#[derive(Deserialize, Debug)]
-pub struct WindowTemp {
-        pub width: Option<u32>,
-        pub height: Option<u32>,
-        pub elem_cnr_rad: Option<u8>,
-        pub row_height: Option<f32>,
+
+fn default_row_height() -> f32 {
+        30.0
+}
+fn default_cnr_rad() -> u8 {
+        5
+}
+fn default_height() -> u32 {
+        250
+}
+fn default_width() -> u32 {
+        250
+}
+
+impl Default for Window {
+        fn default() -> Self {
+                Self {
+                        width: default_width(),
+                        height: default_height(),
+                        elem_cnr_rad: default_cnr_rad(),
+                        row_height: default_row_height(),
+                }
+        }
 }
 
 // ==== misc ====
-#[derive(Deserialize, Debug)]
+
+#[derive(Clone, Deserialize, Debug)]
 pub struct Misc {
+        #[serde(default)]
         pub search_hint: String,
+        #[serde(default = "default_timeout")]
         pub timeout: u64,
 }
-#[derive(Deserialize, Debug)]
-pub struct MiscTemp {
-        pub search_hint: Option<String>,
-        pub timeout: Option<u64>,
+fn default_timeout() -> u64 {
+        20
 }
+impl Default for Misc {
+        fn default() -> Self {
+                Self {
+                        search_hint: "Search...".to_string(),
+                        timeout: default_timeout(),
+                }
+        }
+}
+
 // ==== app ====
+
 #[derive(Clone, PartialEq, Eq, Deserialize, Debug)]
 pub struct App {
+        #[serde(default)]
         pub name: String,
+        #[serde(default = "default_icon")]
         pub icon: char,
+        #[serde(default)]
         pub path: String,
 }
-#[derive(Clone, Deserialize, Debug)]
-pub struct AppTemp {
-        pub name: Option<String>,
-        pub icon: Option<char>,
-        pub path: Option<String>,
+
+fn default_icon() -> char {
+        'x'
+}
+
+impl Default for App {
+        fn default() -> Self {
+                Self {
+                        name: "x".to_string(),
+                        icon: default_icon(),
+                        path: "x".to_string(),
+                }
+        }
 }
