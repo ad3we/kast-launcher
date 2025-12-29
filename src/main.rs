@@ -190,47 +190,52 @@ impl eframe::App for KastLauncherApp {
                                 });
 
                                 ui.add_space(4.0); // padding between search and list
-                                egui::ScrollArea::vertical().show(ui, |ui| {
-                                        for (idx, app) in self.sorted_apps.iter().enumerate() {
-                                                let selected = idx == self.selected_index;
+                                egui::ScrollArea::vertical()
+                                        .scroll_bar_visibility(egui::scroll_area::ScrollBarVisibility::AlwaysHidden)
+                                        .show(ui, |ui| {
+                                                for (idx, app) in self.sorted_apps.iter().enumerate() {
+                                                        let selected = idx == self.selected_index;
 
-                                                let bg_color = if selected {
-                                                        ui.visuals().selection.bg_fill
-                                                } else {
-                                                        egui::Color32::TRANSPARENT
-                                                };
+                                                        let bg_color = if selected {
+                                                                ui.visuals().selection.bg_fill
+                                                        } else {
+                                                                egui::Color32::TRANSPARENT
+                                                        };
 
-                                                let response = ui.allocate_ui_with_layout(
-                                                        egui::vec2(ui.available_width(), self.config.window.row_height),
-                                                        egui::Layout::left_to_right(egui::Align::Center),
-                                                        |ui| {
-                                                                ui.painter().rect_filled(
-                                                                        ui.max_rect(),
-                                                                        self.config.window.elem_cnr_rad,
-                                                                        bg_color,
-                                                                );
+                                                        let response = ui.allocate_ui_with_layout(
+                                                                egui::vec2(ui.available_width(), self.config.window.row_height),
+                                                                egui::Layout::left_to_right(egui::Align::Center),
+                                                                |ui| {
+                                                                        ui.painter().rect_filled(
+                                                                                ui.max_rect(),
+                                                                                self.config.window.elem_cnr_rad,
+                                                                                bg_color,
+                                                                        );
 
-                                                                ui.label(RichText::new(format!(" {}", app.icon)).font(
-                                                                        FontId::new(self.config.font.size + 7.0, FontFamily::Monospace),
-                                                                ));
+                                                                        ui.label(RichText::new(format!(" {}", app.icon)).font(
+                                                                                FontId::new(
+                                                                                        self.config.font.size + 7.0,
+                                                                                        FontFamily::Monospace,
+                                                                                ),
+                                                                        ));
 
-                                                                ui.label(RichText::new(&app.name).font(FontId::new(
-                                                                        self.config.font.size,
-                                                                        FontFamily::default(),
-                                                                )));
-                                                        },
-                                                );
+                                                                        ui.label(RichText::new(&app.name).font(FontId::new(
+                                                                                self.config.font.size,
+                                                                                FontFamily::default(),
+                                                                        )));
+                                                                },
+                                                        );
 
-                                                // Mouse hover/click updates selection
-                                                if response.response.hovered() {
-                                                        self.selected_index = idx;
+                                                        // Mouse hover/click updates selection
+                                                        if response.response.hovered() {
+                                                                self.selected_index = idx;
+                                                        }
+                                                        if response.response.clicked() {
+                                                                // ACTIVATE APP
+                                                                println!("Clicked: {}", app.name);
+                                                        }
                                                 }
-                                                if response.response.clicked() {
-                                                        // ACTIVATE APP
-                                                        println!("Clicked: {}", app.name);
-                                                }
-                                        }
-                                });
+                                        });
                         });
 
                         // popup: no config was found and a new one has been created
