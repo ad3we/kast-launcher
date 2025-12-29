@@ -121,6 +121,7 @@ impl eframe::App for KastLauncherApp {
 
                 // escape = exit program
                 if ctx.input(|i| i.key_pressed(Key::Escape)) {
+                        ctx.send_viewport_cmd(egui::ViewportCommand::Close);
                         std::process::exit(0);
                 }
                 // enter = toggle searchbar focus
@@ -198,6 +199,7 @@ impl eframe::App for KastLauncherApp {
                                         if i.key_pressed(egui::Key::Enter) || i.key_pressed(egui::Key::Space) {
                                                 let app = &self.sorted_apps[self.selected_index];
                                                 launch_app::run(app.clone());
+                                                ctx.send_viewport_cmd(egui::ViewportCommand::Close);
                                                 std::process::exit(0);
                                         }
                                 });

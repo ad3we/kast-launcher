@@ -1,7 +1,7 @@
 [package]
 name = "kast"
 description = "App launcher for linux"
-version = "1.0.4"
+version = "1.0.6"
 edition = "2024"
 authors = ["Simon Danielsson <contact@simondanielsson.se>"]
 license = "MIT"
@@ -9,6 +9,12 @@ repository = "https://github.com/simon-danielsson/kast-launcher"
 keywords = ["scripting", "manager", "file", "browser", "launcher", "productivity", "linux", "i3"]
 exclude = ["media/"]
 readme = true
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
 
 [dependencies]
 eframe = "0.33.3"

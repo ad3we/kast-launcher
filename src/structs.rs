@@ -2,15 +2,15 @@ use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
 pub struct Config {
-        #[serde(default)]
+        #[serde(rename = "Font")]
         pub font: Font,
-        #[serde(default)]
+        #[serde(rename = "Icons")]
         pub icons: Icons,
-        #[serde(default)]
+        #[serde(rename = "Colors")]
         pub colors: Colors,
-        #[serde(default)]
+        #[serde(rename = "Window")]
         pub window: Window,
-        #[serde(default)]
+        #[serde(rename = "Misc")]
         pub misc: Misc,
         #[serde(rename = "App")]
         pub apps: Vec<App>,
