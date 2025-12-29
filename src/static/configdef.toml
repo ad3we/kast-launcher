@@ -1,0 +1,48 @@
+[Font]
+# path = "/home/simon/dotfiles/fonts/.local/share/fonts/arial.ttf"
+size = 12.0
+
+[Icons]
+entry = ''
+# defaults to false if omitted
+entry_icon = true
+
+[Colors]
+text = "#ffffff"
+text_aux = "#888888"
+accent = "#333333"
+background = "#1a1a1a"
+
+[Window]
+width = 300
+height = 250
+# corner radius of ui elements
+# (corners of the windows themselves need
+# to be set up seperately using picom)
+elem_cnr_rad = 5
+row_height = 35
+
+[Misc]
+search_hint = "Search..."
+# terminate kast automatically after
+# a set amount of seconds (0 = disabled)
+# if this field is omitted or invalid it
+# will default to 20 seconds
+timeout = 20
+
+# both devicons and emojis are valid
+# for the icon variable
+[[App]]
+name = "Gimp"
+icon = ''
+command = "gimp &"
+
+[[App]]
+name = "Firefox"
+icon = ''
+command = "firefox &"
+
+[[App]]
+name = "Files"
+icon = ''
+command = "pcmanfm &"
