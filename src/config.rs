@@ -20,7 +20,7 @@ fn get_conf_path_from_sys() -> (PathBuf, bool) {
         let mut conf_file_was_created: bool = false;
         let mut path = get_home_path().expect("Failed to get home directory");
 
-        let conf_file_name = format!(".{}", APP_NAME);
+        let conf_file_name = format!(".config/{}/{}.toml", APP_NAME, APP_NAME);
         path.push(&conf_file_name);
 
         if path.exists() {
@@ -33,6 +33,9 @@ fn get_conf_path_from_sys() -> (PathBuf, bool) {
 }
 
 fn create_conf_file(path: &PathBuf) -> std::io::Result<()> {
+        if let Some(parent) = path.parent() {
+                fs::create_dir_all(parent)?;
+        }
         let mut file = File::create_new(path)?;
         file.write_all(CONF_FILE_DEF.as_bytes())?;
         Ok(())

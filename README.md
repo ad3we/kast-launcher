@@ -36,7 +36,7 @@
 ## ✨ Features
 + ⌨️ Easy and fast keyboard operation
 + ⚡ Launch .desktop, .sh, .AppImage as well as general bin files all within a cohesive interface.
-+ 🧠 Every setting is stored in a config (.toml) file, keeping your config very portable between different machines.
++ 🧠 Configure painlessly with `.config/kast/kast.toml`, keeping your config very portable between different machines. A default configuration is created automatically if none is present.
 
 > [!IMPORTANT]  
 > 'kast' was created exclusively for my own use on a computer running Void Linux with i3. I can't guarantee that this program will run on your computer - for the best results, clone this repo and adjust the source code to you liking!
