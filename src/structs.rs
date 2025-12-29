@@ -13,9 +13,8 @@ pub struct Config {
 impl Config {
         pub fn new(temp: ConfigTemp) -> Self {
                 // Helper closures
-                let str_or_default = |opt: Option<String>, default: &str| -> String {
-                        opt.unwrap_or_else(|| default.to_string())
-                };
+                let str_or_default =
+                |opt: Option<String>, default: &str| -> String { opt.unwrap_or(default.to_string()) };
                 let char_or_default =
                 |opt: Option<char>, default: char| -> char { opt.unwrap_or_else(|| default) };
                 let bool_or_default =
@@ -56,7 +55,7 @@ impl Config {
                                 .map(|a| App {
                                         name: str_or_default(a.name, "x"),
                                         icon: char_or_default(a.icon, 'x'),
-                                        command: str_or_default(a.command, "x"),
+                                        path: str_or_default(a.path, "x"),
                                 })
                                 .collect(),
                 }
@@ -134,7 +133,7 @@ impl ConfigTemp {
                         .map(|a| AppTemp {
                                 name: Some(a.name.clone().unwrap_or("x".to_string())),
                                 icon: Some(a.icon.clone().unwrap_or('x')),
-                                command: Some(a.command.clone().unwrap_or("x".to_string())),
+                                path: Some(a.path.clone().unwrap_or("x".to_string())),
                         })
                         .collect()
         }
@@ -212,11 +211,11 @@ pub struct MiscTemp {
 pub struct App {
         pub name: String,
         pub icon: char,
-        pub command: String,
+        pub path: String,
 }
 #[derive(Clone, Deserialize, Debug)]
 pub struct AppTemp {
         pub name: Option<String>,
         pub icon: Option<char>,
-        pub command: Option<String>,
+        pub path: Option<String>,
 }

@@ -35,14 +35,18 @@ timeout = 20
 [[App]]
 name = "Gimp"
 icon = ''
-command = "gimp &"
+path = "gimp &"
 
 [[App]]
 name = "Firefox"
 icon = ''
-command = "firefox &"
+path = "/usr/bin/firefox &"
 
+[[App]]
+name = "Alacritty"
+icon = ''
+path = "/usr/bin/alacritty &"
 [[App]]
 name = "Files"
 icon = ''
-command = "pcmanfm &"
+path = "pcmanfm &"
