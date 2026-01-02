@@ -6,7 +6,6 @@ use std::sync::{
         atomic::{AtomicBool, Ordering},
 };
 use std::{thread, time::Duration};
-use winit::platform::x11;
 
 pub mod config;
 pub mod constants;
@@ -22,6 +21,8 @@ fn main() {
         let conf_created: bool;
         (conf, conf_created) = config::import();
 
+        // ==== apply colors ====
+        let colors: Colors = Colors::new(&conf.colors);
         // ==== program ====
         let vp_width = conf.window.width;
         let vp_height = conf.window.height;
@@ -49,6 +50,7 @@ fn main() {
                 Box::new(|cc| {
                         Ok(Box::new(KastLauncherApp::new(
                                 conf,
+                                colors,
                                 conf_created,
                                 search_focus,
                                 sorted_apps,
@@ -60,6 +62,7 @@ fn main() {
 
 struct KastLauncherApp {
         config: Config,
+        colors: Colors,
         search: String,
         conf_created: bool,
         search_focus: bool,
@@ -71,24 +74,32 @@ struct KastLauncherApp {
 
 impl KastLauncherApp {
         fn new(
-                mut config: Config,
+                config: Config,
+                colors: Colors,
                 conf_created: bool,
                 search_focus: bool,
                 sorted_apps: Vec<App>,
                 cc: &eframe::CreationContext<'_>,
         ) -> Self {
-                setup_custom_style(&cc.egui_ctx, &mut config);
                 loadfont::replace_fonts(&cc.egui_ctx, config.font.path.clone());
                 loadfont::add_font(&cc.egui_ctx, config.font.path.clone());
+                let is_quitting = Arc::new(AtomicBool::new(false));
+                let timeout_q = Arc::clone(&is_quitting);
+                let timeo = config.misc.timeout;
+                thread::spawn(move || {
+                        thread::sleep(Duration::from_secs(timeo));
+                        timeout_q.store(true, Ordering::SeqCst);
+                });
 
                 Self {
                         config,
+                        colors: colors,
                         search: String::new(),
                         conf_created,
                         search_focus,
                         sorted_apps,
                         selected_index: 0,
-                        is_quitting: Arc::new(AtomicBool::new(false)),
+                        is_quitting: is_quitting,
                         threads: vec![],
                 }
         }
@@ -127,22 +138,22 @@ impl KastLauncherApp {
                         self.conf_created = false;
                 }
         }
-        fn timeout_logic(&mut self) {
-                let timeout_q = Arc::clone(&self.is_quitting);
-                let timeo = self.config.misc.timeout;
-                let _ = thread::spawn(move || {
-                        thread::sleep(Duration::from_secs(timeo));
-                        timeout_q.store(true, Ordering::SeqCst);
-                });
-        }
+        // fn timeout_logic(&mut self) {
+        //         let timeout_q = Arc::clone(&self.is_quitting);
+        //         let timeo = self.config.misc.timeout;
+        //         let _ = thread::spawn(move || {
+        //                 thread::sleep(Duration::from_secs(timeo));
+        //                 timeout_q.store(true, Ordering::SeqCst);
+        //         });
+        // }
 }
 
 impl eframe::App for KastLauncherApp {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-                self.timeout_logic();
                 self.search_loop();
                 self.input(ctx);
 
+                setup_custom_style(ctx, &self.colors);
                 // ==== ui =====
                 egui::CentralPanel::default().show(ctx, |ui| {
                         let corner_rad = egui::CornerRadius::same(self.config.window.elem_cnr_rad);
@@ -177,10 +188,10 @@ impl eframe::App for KastLauncherApp {
                                                                 TextEdit::singleline(&mut self.search)
                                                                         .font(FontId::new(self.config.font.size, FontFamily::default()))
                                                                         .frame(false)
-                                                                        .background_color(hex_to_color32(&self.config.colors.accent))
+                                                                        .background_color(self.colors.accent)
                                                                         .hint_text(
                                                                                 RichText::new(&self.config.misc.search_hint)
-                                                                                        .color(hex_to_color32(&self.config.colors.text_aux)),
+                                                                                        .color(self.colors.text_aux),
                                                                         )
                                                                         .desired_width(available_width),
                                                         );
@@ -273,7 +284,9 @@ impl eframe::App for KastLauncherApp {
                                                                 FontFamily::default(),
                                                         )))
                                                 });
-                                        });
+                                        })
+                        } else {
+                                None
                         };
 
                         if self.is_quitting.load(Ordering::SeqCst) {
@@ -285,25 +298,47 @@ impl eframe::App for KastLauncherApp {
 
 // ==== style ====
 
-fn hex_to_color32(hex: &str) -> Color32 {
-        let hex = hex.trim_start_matches('#');
-        let r = u8::from_str_radix(&hex[0..2], 16).unwrap_or(255);
-        let g = u8::from_str_radix(&hex[2..4], 16).unwrap_or(255);
-        let b = u8::from_str_radix(&hex[4..6], 16).unwrap_or(255);
-        Color32::from_rgb(r, g, b)
+struct Colors {
+        text: Color32,
+        text_aux: Color32,
+        background: Color32,
+        accent: Color32,
 }
 
-fn setup_custom_style(ctx: &egui::Context, config: &mut Config) {
+impl Colors {
+        fn new(config_colors: &structs::Colors) -> Self {
+                Self {
+                        text: hex_to_color32(&config_colors.text),
+                        text_aux: hex_to_color32(&config_colors.text_aux),
+                        background: hex_to_color32(&config_colors.background),
+                        accent: hex_to_color32(&config_colors.accent),
+                }
+        }
+}
+
+fn hex_to_color32(hex: &str) -> Color32 {
+        let hex = hex.trim_start_matches('#');
+        let mut bytes = [255u8; 3];
+
+        for i in 0..3 {
+                if let Ok(val) = u8::from_str_radix(&hex[i * 2..i * 2 + 2], 16) {
+                        bytes[i] = val;
+                }
+        }
+        Color32::from_rgb(bytes[0], bytes[1], bytes[2])
+}
+
+fn setup_custom_style(ctx: &egui::Context, colors: &Colors) {
         ctx.style_mut(|style| {
-                style.visuals.hyperlink_color = hex_to_color32(&config.colors.text);
-                style.visuals.text_cursor.stroke.color = hex_to_color32(&config.colors.text);
-                style.visuals.window_fill = hex_to_color32(&config.colors.background);
+                style.visuals.hyperlink_color = colors.text;
+                style.visuals.text_cursor.stroke.color = colors.text;
+                style.visuals.window_fill = colors.background;
                 style.visuals.selection = Selection {
-                        bg_fill: hex_to_color32(&config.colors.accent),
-                        stroke: Stroke::new(1.0, hex_to_color32(&config.colors.accent)),
+                        bg_fill: colors.accent,
+                        stroke: Stroke::new(1.0, colors.accent),
                 };
 
-                style.visuals.override_text_color = Some(hex_to_color32(&config.colors.text));
-                style.visuals.panel_fill = hex_to_color32(&config.colors.background);
+                style.visuals.override_text_color = Some(colors.text);
+                style.visuals.panel_fill = colors.background
         });
 }
