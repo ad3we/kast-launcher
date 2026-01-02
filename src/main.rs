@@ -117,6 +117,19 @@ impl KastLauncherApp {
                                 .cloned(),
                 );
         }
+
+        // fn update_search(&mut self) {
+        //         let search_l = self.search.to_lowercase();
+        //         self.sorted_apps.clear();
+        //         self.sorted_apps.extend(
+        //                 self.config
+        //                         .apps
+        //                         .iter()
+        //                         .filter(|app| app.name.to_lowercase().contains(&search_l))
+        //                         .cloned(),
+        //         );
+        // }
+
         fn quit(&mut self) {
                 for handle in self.threads.drain(..) {
                         let _ = handle.join();
@@ -150,7 +163,7 @@ impl KastLauncherApp {
 
 impl eframe::App for KastLauncherApp {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-                self.search_loop();
+                // self.search_loop();
                 self.input(ctx);
 
                 setup_custom_style(ctx, &self.colors);
@@ -195,6 +208,10 @@ impl eframe::App for KastLauncherApp {
                                                                         )
                                                                         .desired_width(available_width),
                                                         );
+                                                        if field.changed() {
+                                                                self.search_loop();
+                                                        }
+
                                                         if self.search_focus == true {
                                                                 if self.conf_created == false {
                                                                         field.request_focus();
